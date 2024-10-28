@@ -10,6 +10,7 @@ const SignUp = ({navigation}) => {
     const [password, setPassword] = useState(''); // Cambiar por el nombre de la variable que se usará en el backend
     const [confirmPassword, setConfirmPassword] = useState(''); // Cambiar por el nombre de la variable que se usará en el backend
 
+
     const handleSignUp = async () => {
         if (password !== confirmPassword) {
             Alert.alert('Error', 'Las contraseñas no coinciden');
@@ -22,7 +23,7 @@ const SignUp = ({navigation}) => {
             password
         };
         try {
-            const response = await fetch('http://backend_aldo_y_eric/registro', { // Cambiar por la URL abckend
+            const response = await fetch('http://backend_misa_y_eric/registro', { // Cambiar por la URL abckend
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -78,7 +79,6 @@ const SignUp = ({navigation}) => {
                             placeholderTextColor="#8c8c8c"
                             value={Name}
                             onChangeText={setName}
-                            keyboardType="numeric"
                         />
                     </View>
                     <View style={styles.inputContainer}>
@@ -88,7 +88,6 @@ const SignUp = ({navigation}) => {
                             placeholderTextColor="#8c8c8c"
                             value={LName}
                             onChangeText={setLName}
-                            keyboardType="numeric"
                         />
                     </View>
 
