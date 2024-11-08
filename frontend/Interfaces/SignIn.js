@@ -20,7 +20,7 @@ const SignIn = ({navigation}) => {
                 navigation.dispatch(
                     CommonActions.reset({
                         index: 0,
-                        routes: [{name: 'Profile'}],
+                        routes: [{name: 'Main'}],
                     })
                 );
                 return;
@@ -41,7 +41,7 @@ const SignIn = ({navigation}) => {
                     source={require('../assets/signinback.png')}
                     style={styles.backgroundImage}
                     resizeMode="cover"
-                    blurRadius={5}
+                    blurRadius={1}
                 >
 
                 <Ionicons
@@ -59,7 +59,7 @@ const SignIn = ({navigation}) => {
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
-                    placeholderTextColor="#8c8c8c"
+                    placeholderTextColor="white"
                     value={email}
                     onChangeText={setEmail}
                     keyboardType="email-address"
@@ -67,7 +67,7 @@ const SignIn = ({navigation}) => {
                 <TextInput
                     style={styles.input}
                     placeholder="Password"
-                    placeholderTextColor="#8c8c8c"
+                    placeholderTextColor="white"
                     value={password}
                     onChangeText={setPassword}
                     secureTextEntry
@@ -105,6 +105,8 @@ const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
         justifyContent: 'flex-end',
+
+        
     },
     title: {
         fontSize: 52,

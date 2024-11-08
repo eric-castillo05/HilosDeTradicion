@@ -49,7 +49,7 @@ const SignUp = ({navigation}) => {
                         source={require('../assets/signupback.png')}
                         style={styles.backgroundImage}
                         resizeMode="cover"
-                        blurRadius={5}
+                        blurRadius={1}
                     >
                     <Ionicons
                         name="arrow-back"
@@ -65,7 +65,7 @@ const SignUp = ({navigation}) => {
                         <TextInput
                             style={styles.input}
                             placeholder="Email"
-                            placeholderTextColor="#8c8c8c"
+                            placeholderTextColor="white"
                             value={email}
                             onChangeText={setEmail}
                             keyboardType="email-address"
@@ -76,7 +76,7 @@ const SignUp = ({navigation}) => {
                         <TextInput
                             style={styles.input}
                             placeholder="Nombre"
-                            placeholderTextColor="#8c8c8c"
+                            placeholderTextColor="white"
                             value={Name}
                             onChangeText={setName}
                         />
@@ -85,7 +85,7 @@ const SignUp = ({navigation}) => {
                         <TextInput
                             style={styles.input}
                             placeholder="Apellido"
-                            placeholderTextColor="#8c8c8c"
+                            placeholderTextColor="white"
                             value={LName}
                             onChangeText={setLName}
                         />
@@ -95,7 +95,7 @@ const SignUp = ({navigation}) => {
                         <TextInput
                             style={styles.input}
                             placeholder="Contraseña"
-                            placeholderTextColor="#8c8c8c"
+                            placeholderTextColor="white"
                             value={password}
                             onChangeText={setPassword}
                             secureTextEntry
@@ -107,7 +107,7 @@ const SignUp = ({navigation}) => {
                         <TextInput
                             style={styles.input}
                             placeholder="Confirmar contraseña"
-                            placeholderTextColor="#8c8c8c"
+                            placeholderTextColor="white"
                             value={confirmPassword}
                             onChangeText={setConfirmPassword}
                             secureTextEntry
@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 6 },
         shadowRadius: 1,
         elevation: 3,
+        
     },
     input: {
         flex: 1,
