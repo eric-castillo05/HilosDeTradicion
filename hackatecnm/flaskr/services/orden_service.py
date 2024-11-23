@@ -1,8 +1,6 @@
 from datetime import datetime
-
 from flaskr.extensions import db
-from flaskr.models import Transaccion, Orden, Producto, OrderItem
-
+from flaskr.models import Orden, Producto, OrderItem, Transaccion
 
 class OrdenService:
     @staticmethod
@@ -17,16 +15,17 @@ class OrdenService:
             db.session.add(nueva_orden)
             db.session.flush()  # Para obtener el ID de la orden
 
-            # Crear los items de la orden
             total = 0
+
+            # Crear los items de la orden
             for item in items:
                 producto = Producto.query.get(item['producto_id'])
                 if not producto:
                     raise Exception(f"Producto {item['producto_id']} no encontrado")
-                
+
                 if producto.cantidad_en_stock < item['quantity']:
                     raise Exception(f"Stock insuficiente para producto {producto.nombre}")
-                
+
                 order_item = OrderItem(
                     order_id=nueva_orden.order_id,
                     product_id=item['producto_id'],
@@ -34,7 +33,7 @@ class OrdenService:
                     price=producto.precio
                 )
                 db.session.add(order_item)
-                
+
                 # Actualizar stock
                 producto.cantidad_en_stock -= item['quantity']
                 total += float(producto.precio) * item['quantity']
@@ -48,8 +47,9 @@ class OrdenService:
                 estado='en proceso'
             )
             db.session.add(transaccion)
-            
+
             db.session.commit()
+
             return nueva_orden
         except Exception as e:
             db.session.rollback()
@@ -60,7 +60,7 @@ class OrdenService:
         try:
             orden = Orden.query.get_or_404(orden_id)
             orden.estado = nuevo_estado
-            
+
             # Actualizar estado de la transacción
             transaccion = Transaccion.query.filter_by(order_id=orden_id).first()
             if transaccion:
@@ -72,7 +72,7 @@ class OrdenService:
                     for item in orden.order_items:
                         producto = Producto.query.get(item.product_id)
                         producto.cantidad_en_stock += item.quantity
-            
+
             db.session.commit()
             return orden
         except Exception as e:

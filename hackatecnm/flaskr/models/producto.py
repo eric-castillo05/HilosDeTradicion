@@ -1,5 +1,3 @@
-# flaskr/models/producto.py
-
 from flaskr.models.artesano import db
 from sqlalchemy import Numeric  # Cambiamos Decimal por Numeric
 

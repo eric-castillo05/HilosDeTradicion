@@ -11,3 +11,13 @@ class Orden(db.Model):
     # Relaciones directas
     order_items = db.relationship('OrderItem', backref='orden', lazy=True)
     transacciones = db.relationship('Transaccion', backref='orden', lazy=True)
+
+    def to_dict(self):
+        return {
+            'order_id': self.order_id,
+            'comprador_id': self.comprador_id,
+            'fecha_creacion': str(self.fecha_creacion),
+            'estado': self.estado,
+            'order_items': [item.to_dict() for item in self.order_items],  # Asumiendo que OrderItem tiene un to_dict
+            'transacciones': [transaccion.to_dict() for transaccion in self.transacciones]  # Asumiendo que Transaccion tiene un to_dict
+        }
