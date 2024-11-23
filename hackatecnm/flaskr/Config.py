@@ -12,3 +12,10 @@ class Config:
     MYSQL_PORT = os.getenv('MYSQL_PORT')
     MYSQL_DATABASE = os.getenv('MYSQL_DATABASE')
 
+    SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}'
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = True  # Set to False in production
+
+
+
