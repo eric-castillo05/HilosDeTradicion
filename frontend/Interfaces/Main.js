@@ -80,6 +80,7 @@ export default function Main({ navigation }) {
                 <View style={styles.gridContainer}>
                     {products.map((product, index) => (
                         <TouchableOpacity
+                            onPress={() => navigation.navigate('Detallevestido', { product })}
                             key={index}
                             style={styles.productCard}
                             activeOpacity={0.7}

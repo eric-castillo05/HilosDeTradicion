@@ -1,7 +1,36 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
+export default function Perfil({ navigation }) {
 
-export default function Perfil() {
+    const handleSignOut = async () => {
+        Alert.alert(
+            'Cerrar sesión',
+            '¿Estás seguro de que quieres cerrar sesión?',
+            [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Aceptar',
+                    onPress: async () => {
+                        try {
+                            await AsyncStorage.removeItem('userUID');
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'Start' }],
+                            });
+                        } catch (error) {
+                            Alert.alert('Error', 'No se pudo cerrar sesión');
+                        }
+                    },
+                },
+            ]
+        );
+    };
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
@@ -17,11 +46,12 @@ export default function Perfil() {
                     <Text style={styles.profileName}>Eric Villa Martinez</Text>
                     <Text style={styles.profileEmail}>Holamundo@gmail.com</Text>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.editButton}>
+                        <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('Start',)}>
                             <Text style={styles.buttonText}>Editar Perfil</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.logoutButton}>
-                            <Text style={styles.buttonText}>Log Out</Text>
+                        <TouchableOpacity style={styles.drawerItem} onPress={handleSignOut}>
+                            <Ionicons name="log-out-outline" size={24} color="red" />
+                            <Text style={[styles.buttonText, { color: 'red' }]}>Cerrar sesión</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

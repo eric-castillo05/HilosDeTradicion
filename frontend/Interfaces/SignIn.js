@@ -9,35 +9,49 @@ import {
     StatusBar,
     TouchableWithoutFeedback,
     Alert,
-    ImageBackground
+    ImageBackground,
+    ActivityIndicator  // Asegúrate de que esté aquí
 } from 'react-native';
 import axios from 'axios';
 import { CommonActions } from '@react-navigation/native';
 import { Ionicons } from "@expo/vector-icons";
 
-const SignIn = ({navigation}) => {
+const SignIn = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(email);
+    };
 
     const handleSignIn = async () => {
-        // Validación básica de campos
         if (!email || !password) {
             Alert.alert('Error', 'Por favor, completa todos los campos');
             return;
         }
 
+        if (!validateEmail(email)) {
+            Alert.alert('Error', 'Por favor, ingresa un correo electrónico válido');
+            return;
+        }
+
+        setLoading(true); // Mostrar el indicador de carga
+
         try {
-            let response = await axios.post('http://', {
+            const response = await axios.post('http://10.177.28.20:5000/compradores/signin', {
                 email: email,
                 password: password,
             });
 
             if (response.status === 200) {
+                // Si el inicio de sesión es exitoso, redirigimos a la pantalla principal
                 navigation.dispatch(
                     CommonActions.reset({
                         index: 0,
-                        routes: [{name: 'Main'}],
+                        routes: [{ name: 'Main' }],
                     })
                 );
             }
@@ -56,6 +70,8 @@ const SignIn = ({navigation}) => {
             } else {
                 Alert.alert('Error', 'No se pudo conectar con el servidor');
             }
+        } finally {
+            setLoading(false); // Ocultar el indicador de carga
         }
     };
 
@@ -141,7 +157,11 @@ const SignIn = ({navigation}) => {
                             style={styles.signInButton}
                             onPress={handleSignIn}
                         >
-                            <Text style={styles.signInButtonText}>INICIAR SESIÓN</Text>
+                            {loading ? (
+                                <ActivityIndicator size="small" color="white" />
+                            ) : (
+                                <Text style={styles.signInButtonText}>INICIAR SESIÓN</Text>
+                            )}
                         </TouchableOpacity>
 
                         <View style={styles.signUpContainer}>

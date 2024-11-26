@@ -32,7 +32,7 @@ def obtener_comprador(comprador_id):
         return jsonify({'error': str(e)}), HTTPStatus.NOT_FOUND
 
 
-@compradores_bp.route('/', methods=['POST'])
+@compradores_bp.route('/signup', methods=['POST'])
 def crear_comprador():
     try:
         data = request.get_json()
