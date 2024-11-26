@@ -6,7 +6,7 @@ from flaskr.models import Comprador
 
 class CompradorService:
     @staticmethod
-    def create_comprador(nombre, email):
+    def create_comprador(nombre, email, password):
         try:
             # Validar si ya existe un comprador con ese email
             if Comprador.query.filter_by(email=email).first():
@@ -15,7 +15,8 @@ class CompradorService:
             nuevo_comprador = Comprador(
                 nombre=nombre,
                 email=email,
-                fecha_registro=datetime.now().date()
+                fecha_registro=datetime.now().date(),
+                password=password
             )
             db.session.add(nuevo_comprador)
             db.session.commit()

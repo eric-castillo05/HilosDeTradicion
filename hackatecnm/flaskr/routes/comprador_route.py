@@ -37,10 +37,10 @@ def crear_comprador():
     try:
         data = request.get_json()
 
-        if not all(key in data for key in ['nombre', 'email']):
+        if not all(key in data for key in ['nombre', 'email', 'password']):
             return jsonify({'error': 'Los campos "nombre" y "email" son requeridos.'}), HTTPStatus.BAD_REQUEST
 
-        comprador = CompradorService.create_comprador(data['nombre'], data['email'])
+        comprador = CompradorService.create_comprador(data['nombre'], data['email'], data['password'])
         return jsonify(comprador), HTTPStatus.CREATED
     except Exception as e:
         return jsonify({'error': str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
@@ -63,3 +63,33 @@ def eliminar_comprador(comprador_id):
         return jsonify(resultado), HTTPStatus.OK
     except Exception as e:
         return jsonify({'error': str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+@compradores_bp.route('/signin', methods=['POST'])
+def signin_comprador():
+    try:
+        data = request.get_json()
+
+        # Validar que los campos requeridos están presentes
+        if not all(key in data for key in ['email', 'password']):
+            return jsonify({'error': 'Los campos "email" y "password" son requeridos.'}), HTTPStatus.BAD_REQUEST
+
+        email = data['email']
+        password = data['password']
+
+        # Buscar comprador por email
+        comprador = Comprador.query.filter_by(email=email).first()
+
+        # Validar email y contraseña
+        if not comprador or comprador.password != password:
+            return jsonify({'error': 'Credenciales inválidas. Email o contraseña incorrectos.'}), HTTPStatus.UNAUTHORIZED
+
+        # Responder con los datos del comprador
+        return jsonify({
+            'message': 'Inicio de sesión exitoso',
+            'comprador': comprador.to_dict()
+        }), HTTPStatus.OK
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+

@@ -9,6 +9,7 @@ class Comprador(db.Model):
     nombre = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False, unique=True)
     fecha_registro = db.Column(db.Date, nullable=False, default=datetime.utcnow)
+    password = db.Column(db.String(255), nullable=False)
 
     # Relación con órdenes
     ordenes = db.relationship('Orden', backref='comprador', lazy=True)
@@ -18,5 +19,6 @@ class Comprador(db.Model):
             'comprador_id': self.comprador_id,
             'nombre': self.nombre,
             'email': self.email,
-            'fecha_registro': str(self.fecha_registro)
+            'fecha_registro': str(self.fecha_registro),
+            'password': self.password,
         }
