@@ -38,16 +38,6 @@ export default function Main() {
                     ))}
                 </View>
 
-                <View style={styles.storyContainer}>
-                    <View style={styles.storyTextContainer}>
-                        <Text style={styles.storyTitle}>HAZ CLICK Y CONOCE LA HISTORIA DE NUESTRAS PRENDAS Y SU ELABORACIÓN</Text>
-                        <Text style={styles.storySubtitle}>DESCUBRELO AQUÍ</Text>
-                    </View>
-                    <TouchableOpacity style={styles.storyButton} onPress={() => {/* función para navegar a la historia */}}>
-                        <Text style={styles.storyButtonText}>Ver Historia</Text>
-                    </TouchableOpacity>
-                </View>
-
                 <Text style={styles.sectionTitle}>También te podría interesar...</Text>
                 <View style={styles.gridContainer}>
                     {['9539468f-0598-4adc-9338-d8b25a6304a8', '9d3e5ee9-3e79-408c-a945-5593b631d0dc', '862d4a78-3605-4376-afb9-a806eea42378', '7f31cf0b-d2c1-446f-b8a3-cf7f768d36f5'].map((img, index) => (

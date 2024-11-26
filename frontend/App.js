@@ -6,6 +6,8 @@ import SignIn from "./Interfaces/SignIn";
 import SignUp from "./Interfaces/SignUp";
 import Main from "./Interfaces/Main";
 import Perfil from "./Interfaces/Perfil";
+import Carrito from "./Interfaces/Carrito";
+import DetalleVestido from "./Interfaces/Detallevestido";
 
 const Stack = createStackNavigator();
 
@@ -18,11 +20,15 @@ export default function App() {
                     headerShown: false,
                 }}
             >
-                <Stack.Screen name="Main" component={Main} options={{animationEnabled: true, gestureEnabled: true,}}/>
+
+                <Stack.Screen name={"Main"} component={Main}/>
+                <Stack.Screen name={"Detallevestido"} component={DetalleVestido} />
                 <Stack.Screen name={"Perfil"} component={Perfil} />
                 <Stack.Screen name="Start" component={StartScreen} />
                 <Stack.Screen name="SignIn" component={SignIn} />
                 <Stack.Screen name="SignUp" component={SignUp} />
+                <Stack.Screen name={"Carrito"} component={Carrito} />
+
 
             </Stack.Navigator>
         </NavigationContainer>
