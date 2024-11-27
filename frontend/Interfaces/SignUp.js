@@ -33,7 +33,7 @@ const SignUp = ({navigation}) => {
         setLoading(true); // Mostrar el indicador de carga
 
         try {
-            const response = await axios.post('http://10.177.28.20:5000/compradores/signup', {
+            const response = await axios.post('http://192.168.0.101:5000/compradores/signup', {
                 nombre: name,
                 email: email,
                 password: password,

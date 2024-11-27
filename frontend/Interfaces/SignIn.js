@@ -10,11 +10,12 @@ import {
     TouchableWithoutFeedback,
     Alert,
     ImageBackground,
-    ActivityIndicator  // Asegúrate de que esté aquí
+    ActivityIndicator
 } from 'react-native';
 import axios from 'axios';
 import { CommonActions } from '@react-navigation/native';
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignIn = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -41,13 +42,18 @@ const SignIn = ({ navigation }) => {
         setLoading(true); // Mostrar el indicador de carga
 
         try {
-            const response = await axios.post('http://10.177.28.20:5000/compradores/signin', {
+            const response = await axios.post('http://192.168.0.101:5000/compradores/signin', {
                 email: email,
                 password: password,
             });
 
             if (response.status === 200) {
-                // Si el inicio de sesión es exitoso, redirigimos a la pantalla principal
+                // Si el inicio de sesión es exitoso, guardamos los datos del usuario en AsyncStorage
+                const { nombre, email } = response.data.comprador; // Suponemos que el backend retorna estos datos
+                await AsyncStorage.setItem('userName', nombre);
+                await AsyncStorage.setItem('userEmail', email);
+
+                // Redirigimos a la pantalla principal
                 navigation.dispatch(
                     CommonActions.reset({
                         index: 0,

@@ -2,22 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function Carrito() {
-    const [items, setItems] = useState([
-        { id: '1', nombre: 'Guayabera negra', precio: 800, cantidad: 1, image: require('../assets/guayabera.png') },
-        { id: '2', nombre: 'Guayabera blanca', precio: 700, cantidad: 1, image: require('../assets/guayablanca.png') },
-        { id: '3', nombre: 'Vestido negro', precio: 880, cantidad: 1, image: require('../assets/vestido.jpg') },
-        { id: '4', nombre: 'Vestido blanco', precio: 700, cantidad: 1, image: require('../assets/vestblanco.png') },
-    ]);
-
+export default function Carrito({ carrito, setCarrito }) {
     const incrementarCantidad = (id) => {
-        setItems(items.map(item =>
+        setCarrito(carrito.map(item =>
             item.id === id ? { ...item, cantidad: item.cantidad + 1 } : item
         ));
     };
 
     const decrementarCantidad = (id) => {
-        const producto = items.find(item => item.id === id);
+        const producto = carrito.find(item => item.id === id);
         if (producto.cantidad === 1) {
             Alert.alert(
                 'Eliminar producto',
@@ -27,25 +20,25 @@ export default function Carrito() {
                     {
                         text: 'Eliminar',
                         onPress: () => {
-                            setItems(items.filter(item => item.id !== id));
+                            setCarrito(carrito.filter(item => item.id !== id));
                         },
                     },
                 ],
             );
         } else {
-            setItems(items.map(item =>
+            setCarrito(carrito.map(item =>
                 item.id === id ? { ...item, cantidad: item.cantidad - 1 } : item
             ));
         }
     };
 
     const calcularTotal = () => {
-        return items.reduce((total, item) => total + (item.precio * item.cantidad), 0);
+        return carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
     };
 
     const finalizarPedido = () => {
         Alert.alert('Pedido finalizado', `Total a pagar: $${calcularTotal()}`);
-        setItems([]); // Limpia el carrito después de finalizar
+        setCarrito([]); // Limpia el carrito después de finalizar
     };
 
     const renderItem = ({ item }) => (
@@ -70,18 +63,18 @@ export default function Carrito() {
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.titulo}>Carrito</Text>
-            {items.length > 0 ? (
+            {carrito.length > 0 ? (
                 <>
                     <FlatList
-                        data={items}
+                        data={carrito}
                         renderItem={renderItem}
                         keyExtractor={(item) => item.id}
                     />
                     <View style={styles.totalContainer}>
                         <TouchableOpacity
-                            style={[styles.finalizarBoton, items.length === 0 && styles.botonDesactivado]}
+                            style={[styles.finalizarBoton, carrito.length === 0 && styles.botonDesactivado]}
                             onPress={finalizarPedido}
-                            disabled={items.length === 0}
+                            disabled={carrito.length === 0}
                         >
                             <Text style={styles.finalizarTexto}>Finalizar pedido</Text>
                         </TouchableOpacity>
@@ -94,6 +87,7 @@ export default function Carrito() {
         </SafeAreaView>
     );
 }
+
 
 const styles = StyleSheet.create({
     container: {

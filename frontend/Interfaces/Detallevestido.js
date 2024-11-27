@@ -1,197 +1,66 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function DetalleVestido() {
-    const vestido = {
-        id: '1',
-        nombre: 'Vestido Floral',
-        precio: 1298,
-        image: require('../assets/vestblanco.png'),
-        tallas: ['XS', 'S', 'M', 'L', 'XL'],
-        productosSugeridos: [
-            {
-                id: '2',
-                nombre: 'Vestido Rojo',
-                imagen: 'https://via.placeholder.com/150',
-            },
-            {
-                id: '3',
-                nombre: 'Vestido Azul',
-                imagen: 'https://via.placeholder.com/150',
-            },
-        ],
-    };
-
-    const [cantidad, setCantidad] = useState(1);
-    const [tallaSeleccionada, setTallaSeleccionada] = useState(null);
-
-    const incrementarCantidad = () => setCantidad(cantidad + 1);
-    const decrementarCantidad = () => cantidad > 1 && setCantidad(cantidad - 1);
+export default function DetalleVestido({ route, setCarrito }) {
+    const { product } = route.params;  // Obtener datos del producto
+    const navigation = useNavigation();
 
     const agregarAlCarrito = () => {
-        if (!tallaSeleccionada) {
-            Alert.alert('Selecciona una talla', 'Por favor, elige una talla antes de agregar al carrito.');
-            return;
-        }
-        console.log('Producto agregado:', {
-            id: vestido.id,
-            nombre: vestido.nombre,
-            precio: vestido.precio,
-            talla: tallaSeleccionada,
-            cantidad,
+        setCarrito((prevCarrito) => {
+            // Verificar si el producto ya existe en el carrito
+            const existe = prevCarrito.some((item) => item.id === product.id);
+            if (existe) {
+                Alert.alert('Producto ya en el carrito', 'Este producto ya ha sido agregado.');
+                return prevCarrito;
+            }
+            return [...prevCarrito, { ...product, cantidad: 1 }];
         });
-        Alert.alert('Producto agregado', `El vestido ha sido agregado al carrito.\nTalla: ${tallaSeleccionada}\nCantidad: ${cantidad}`);
+        Alert.alert('Producto agregado', `${product.name} ha sido agregado al carrito.`);
+        navigation.goBack(); // Volver a la pantalla anterior
     };
 
-    const renderProductoSugerido = ({ item }) => (
-        <View style={styles.productoSugerido}>
-            <Image source={{ uri: item.imagen }} style={styles.imagenSugerida} />
-            <Text style={styles.nombreSugerido}>{item.nombre}</Text>
-        </View>
-    );
-
     return (
-        <SafeAreaView style={styles.container}>
-            <Image source={vestido.image} style={styles.imagen} />
-            <Text style={styles.titulo}>{vestido.nombre}</Text>
-            <Text style={styles.precio}>${vestido.precio}</Text>
-
-            <View style={styles.tallas}>
-                {vestido.tallas.map((talla, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={[
-                            styles.tallaButton,
-                            talla === tallaSeleccionada && styles.tallaSeleccionada,
-                        ]}
-                        onPress={() => setTallaSeleccionada(talla)}
-                    >
-                        <Text>{talla}</Text>
-                    </TouchableOpacity>
-                ))}
+        <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.productImageContainer}>
+                <Image source={product.image} style={styles.productImage} resizeMode="contain" />
             </View>
 
-            <Text style={styles.sugerenciasTitulo}>También te podría gustar</Text>
-            <FlatList
-                data={vestido.productosSugeridos}
-                renderItem={renderProductoSugerido}
-                keyExtractor={(item) => item.id}
-                horizontal
-            />
-
-            <View style={styles.cantidadContainer}>
-                <TouchableOpacity onPress={decrementarCantidad}>
-                    <Text style={styles.boton}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.cantidad}>{cantidad}</Text>
-                <TouchableOpacity onPress={incrementarCantidad}>
-                    <Text style={styles.boton}>+</Text>
-                </TouchableOpacity>
+            <View style={styles.productDetails}>
+                <Text style={styles.productName}>{product.name}</Text>
+                <Text style={styles.productPrice}>{product.price}</Text>
+                <Text style={styles.productDescription}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                </Text>
             </View>
 
-            <View style={styles.botones}>
-                <TouchableOpacity style={styles.botonCarrito} onPress={agregarAlCarrito}>
-                    <Text style={styles.textoBoton}>Agregar al carrito</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.botonComprar}>
-                    <Text style={styles.textoBoton}>Comprar ahora</Text>
-                </TouchableOpacity>
-            </View>
-        </SafeAreaView>
+            <TouchableOpacity
+                style={styles.addToCartButton}
+                onPress={agregarAlCarrito}
+            >
+                <Text style={styles.addToCartText}>Agregar al carrito</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+            >
+                <Text style={styles.backButtonText}>Volver</Text>
+            </TouchableOpacity>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-    },
-    imagen: {
-        width: '100%',
-        height: 200,
-        resizeMode: 'contain',
-    },
-    titulo: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginTop: 20,
-    },
-    precio: {
-        fontSize: 18,
-        marginVertical: 10,
-    },
-    tallas: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginVertical: 20,
-    },
-    tallaButton: {
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        backgroundColor: '#f5f5f5',
-    },
-    tallaSeleccionada: {
-        borderColor: '#f01a7d',
-        backgroundColor: '#ffeef4',
-    },
-    sugerenciasTitulo: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginVertical: 20,
-    },
-    productoSugerido: {
-        marginRight: 15,
-        alignItems: 'center',
-    },
-    imagenSugerida: {
-        width: 100,
-        height: 100,
-        resizeMode: 'contain',
-    },
-    nombreSugerido: {
-        fontSize: 14,
-        textAlign: 'center',
-    },
-    cantidadContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 20,
-    },
-    boton: {
-        fontSize: 24,
-        color: '#f01a7d',
-        paddingHorizontal: 20,
-    },
-    cantidad: {
-        fontSize: 18,
-        marginHorizontal: 10,
-    },
-    botones: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 30,
-    },
-    botonCarrito: {
-        flex: 1,
-        backgroundColor: '#f01a7d',
-        padding: 15,
-        marginRight: 10,
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    botonComprar: {
-        flex: 1,
-        backgroundColor: '#ffd700',
-        padding: 15,
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    textoBoton: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
+    container: { flex: 1, backgroundColor: '#fff', paddingBottom: 20 },
+    productImageContainer: { alignItems: 'center', marginTop: 20 },
+    productImage: { marginTop: 50 ,width: '30%', height: 300, borderRadius: 10 },
+    productDetails: { paddingHorizontal: 16, paddingTop: 20 },
+    productName: { fontSize: 24, fontWeight: 'bold', marginBottom: 8 },
+    productPrice: { fontSize: 18, color: '#A18249', marginBottom: 16 },
+    productDescription: { fontSize: 14, color: '#555', lineHeight: 22, marginBottom: 30 },
+    addToCartButton: { backgroundColor: '#df42ce', paddingVertical: 14, borderRadius: 10, marginHorizontal: 16, marginBottom: 16, alignItems: 'center' },
+    addToCartText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+    backButton: { paddingVertical: 14, borderWidth: 1, borderColor: '#df42ce', borderRadius: 10, marginHorizontal: 16, alignItems: 'center' },
+    backButtonText: { color: '#df42ce', fontSize: 16, fontWeight: 'bold' },
 });

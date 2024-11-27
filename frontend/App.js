@@ -8,6 +8,9 @@ import Main from "./Interfaces/Main";
 import Perfil from "./Interfaces/Perfil";
 import Carrito from "./Interfaces/Carrito";
 import DetalleVestido from "./Interfaces/Detallevestido";
+import ArtesanoScreen from "./Interfaces/ArtesanoScreen";
+import ProductoScreen from "./Interfaces/ProductoScreen";
+import EditarPerfil from "./Interfaces/EditarPerfil";
 
 const Stack = createStackNavigator();
 
@@ -27,6 +30,9 @@ export default function App() {
                 <Stack.Screen name="SignIn" component={SignIn} />
                 <Stack.Screen name="SignUp" component={SignUp} />
                 <Stack.Screen name={"Carrito"} component={Carrito} />
+                <Stack.Screen name={"Artesano"} component={ArtesanoScreen} />
+                <Stack.Screen name={"Productos"} component={ProductoScreen} />
+                <Stack.Screen name={"Editar"} component={EditarPerfil} />
 
 
             </Stack.Navigator>

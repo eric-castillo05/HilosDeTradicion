@@ -1,19 +1,11 @@
 import React from 'react';
 import { View, Text, ImageBackground, ScrollView, TouchableOpacity, StyleSheet, Dimensions, SafeAreaView } from 'react-native';
 import { Home, ShoppingCart, Tag, User } from 'lucide-react-native';
+import { productos, productosRelacionados } from './productos'; // Importa los productos desde el archivo productos.js
 
 export default function Main({ navigation }) {
-    // Array con las imágenes y datos de los productos
-    const products = [
-        { id: '1', image: require('../assets/vestido.jpg'), name: 'Vestido flor otoñal', price: '$49.99' },
-        { id: '2', image: require('../assets/guayabera.png'), name: 'Vestido de noche', price: '$79.99' },
-        { id: '3', image: require('../assets/vestblanco.png'), name: 'Vestido casual', price: '$39.99' },
-        { id: '4', image: require('../assets/guayablanca.png'), name: 'Vestido elegante', price: '$89.99' },
-    ];
-
     const [activeTab, setActiveTab] = React.useState('home');
 
-    // Componente de la barra de navegación
     const NavigationBar = () => (
         <View style={styles.navigationBar}>
             <TouchableOpacity
@@ -28,7 +20,6 @@ export default function Main({ navigation }) {
                     Inicio
                 </Text>
             </TouchableOpacity>
-
 
             <TouchableOpacity
                 style={styles.navItem}
@@ -78,7 +69,7 @@ export default function Main({ navigation }) {
 
                 <Text style={styles.sectionTitle}>Lo más vendido</Text>
                 <View style={styles.gridContainer}>
-                    {products.map((product, index) => (
+                    {productos.map((product, index) => (
                         <TouchableOpacity
                             onPress={() => navigation.navigate('Detallevestido', { product })}
                             key={index}
@@ -98,19 +89,19 @@ export default function Main({ navigation }) {
 
                 <Text style={styles.sectionTitle}>También te podría interesar...</Text>
                 <View style={styles.gridContainer}>
-                    {['9539468f-0598-4adc-9338-d8b25a6304a8', '9d3e5ee9-3e79-408c-a945-5593b631d0dc', '862d4a78-3605-4376-afb9-a806eea42378', '7f31cf0b-d2c1-446f-b8a3-cf7f768d36f5'].map((img, index) => (
+                    {productosRelacionados.map((product, index) => (
                         <TouchableOpacity
                             key={index}
                             style={styles.productCard}
                             activeOpacity={0.7}
                         >
                             <ImageBackground
-                                source={{ uri: `https://cdn.usegalileo.ai/stability/${img}.png` }}
+                                source={product.image}
                                 style={styles.productImage}
                                 imageStyle={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
                             />
-                            <Text style={styles.productName}>Lorem Ipsum</Text>
-                            <Text style={styles.productPrice}>Price</Text>
+                            <Text style={styles.productName}>{product.name}</Text>
+                            <Text style={styles.productPrice}>{product.price}</Text>
                         </TouchableOpacity>
                     ))}
                 </View>
@@ -125,7 +116,7 @@ const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     safeArea: { flex: 1, backgroundColor: '#FFFFFF' },
-    container: { paddingBottom: 80, backgroundColor: '#FFFFFF' }, // Increased bottom padding for navigation bar
+    container: { paddingBottom: 80, backgroundColor: '#FFFFFF' },
     header: { paddingVertical: 20, alignItems: 'center' },
     title: { color: '#1C160C', fontSize: 20, fontWeight: 'bold', textAlign: 'center' },
     collectionBackground: {
@@ -149,17 +140,11 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         overflow: 'hidden',
         backgroundColor: '#F8F8F8',
-        elevation: 2,  // for Android shadow
-        shadowColor: '#000',  // for iOS shadow
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
+        elevation: 2,
     },
     productImage: { width: '100%', aspectRatio: 3 / 4 },
     productName: { color: '#1C160C', fontSize: 14, fontWeight: '500', paddingHorizontal: 10, paddingTop: 8 },
     productPrice: { color: '#A18249', fontSize: 14, paddingHorizontal: 10, paddingBottom: 8 },
-
-    // New Navigation Bar Styles
     navigationBar: {
         position: 'absolute',
         bottom: 0,
