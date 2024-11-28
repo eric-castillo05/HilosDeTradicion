@@ -42,7 +42,7 @@ const SignIn = ({ navigation }) => {
         setLoading(true); // Mostrar el indicador de carga
 
         try {
-            const response = await axios.post('http://10.177.28.20:5000/compradores/signin', {
+            const response = await axios.post('http://192.168.0.101:5000/compradores/signin', {
                 email: email,
                 password: password,
             });
@@ -58,6 +58,59 @@ const SignIn = ({ navigation }) => {
                     CommonActions.reset({
                         index: 0,
                         routes: [{ name: 'Main' }],
+                    })
+                );
+            }
+        } catch (error) {
+            if (error.response) {
+                switch (error.response.status) {
+                    case 401:
+                        Alert.alert('Error', 'Email o contraseña incorrectos');
+                        break;
+                    case 404:
+                        Alert.alert('Error', 'Usuario no encontrado');
+                        break;
+                    default:
+                        Alert.alert('Error', 'Ha ocurrido un error inesperado');
+                }
+            } else {
+                Alert.alert('Error', 'No se pudo conectar con el servidor');
+            }
+        } finally {
+            setLoading(false); // Ocultar el indicador de carga
+        }
+    };
+
+    const handleSignInASrtesano = async () => {
+        if (!email || !password) {
+            Alert.alert('Error', 'Por favor, completa todos los campos');
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            Alert.alert('Error', 'Por favor, ingresa un correo electrónico válido');
+            return;
+        }
+
+        setLoading(true); // Mostrar el indicador de carga
+
+        try {
+            const response = await axios.post('http://192.168.0.101:5000/compradores/signin', {
+                email: email,
+                password: password,
+            });
+
+            if (response.status === 200) {
+                // Si el inicio de sesión es exitoso, guardamos los datos del usuario en AsyncStorage
+                const { nombre, email } = response.data.comprador; // Suponemos que el backend retorna estos datos
+                await AsyncStorage.setItem('userName', nombre);
+                await AsyncStorage.setItem('userEmail', email);
+
+                // Redirigimos a la pantalla principal
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 0,
+                        routes: [{ name: 'MainArtesano' }],
                     })
                 );
             }
@@ -170,6 +223,19 @@ const SignIn = ({ navigation }) => {
                             )}
                         </TouchableOpacity>
 
+                        {/* Botón para iniciar sesión como artesano */}
+                        <TouchableOpacity
+                            style={styles.artisanSignInButton}
+                            onPress={handleSignInASrtesano}
+                        >
+                            {loading ? (
+                                <ActivityIndicator size="small" color="white" />
+                            ) : (
+                                <Text style={styles.artisanSignInButtonText}>INICIAR COMO ARTESANO</Text>
+                            )}
+                        </TouchableOpacity>
+
+
                         <View style={styles.signUpContainer}>
                             <Text style={styles.signUpText}>
                                 ¿No tienes una cuenta?{' '}
@@ -271,6 +337,20 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 14,
     },
+    artisanSignInButton: {
+        backgroundColor: '#4CAF50', // Cambia el color para diferenciarlo
+        borderRadius: 10,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    artisanSignInButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+
 });
 
 export default SignIn;

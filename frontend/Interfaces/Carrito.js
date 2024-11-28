@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { CartContext } from '../CartContext';
 
-export default function Carrito({ carrito, setCarrito }) {
+export default function Carrito() {
+    const { carrito, setCarrito } = useContext(CartContext);
+
     const incrementarCantidad = (id) => {
         setCarrito(carrito.map(item =>
             item.id === id ? { ...item, cantidad: item.cantidad + 1 } : item
@@ -14,7 +17,7 @@ export default function Carrito({ carrito, setCarrito }) {
         if (producto.cantidad === 1) {
             Alert.alert(
                 'Eliminar producto',
-                `¿Deseas eliminar "${producto.nombre}" del carrito?`,
+                `¿Deseas eliminar "${producto.name}" del carrito?`,
                 [
                     { text: 'Cancelar', style: 'cancel' },
                     {
@@ -33,7 +36,7 @@ export default function Carrito({ carrito, setCarrito }) {
     };
 
     const calcularTotal = () => {
-        return carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
+        return carrito.reduce((total, item) => total + (parseFloat(item.price.replace('$', '')) * item.cantidad), 0);
     };
 
     const finalizarPedido = () => {
@@ -45,8 +48,8 @@ export default function Carrito({ carrito, setCarrito }) {
         <View style={styles.itemContainer}>
             <Image source={item.image} style={styles.imagen} />
             <View style={styles.textContainer}>
-                <Text style={styles.nombre}>{item.nombre}</Text>
-                <Text style={styles.precio}>Precio: ${item.precio}</Text>
+                <Text style={styles.nombre}>{item.name}</Text>
+                <Text style={styles.precio}>Precio: {item.price}</Text>
             </View>
             <View style={styles.cantidadContainer}>
                 <TouchableOpacity onPress={() => decrementarCantidad(item.id)}>
@@ -68,7 +71,7 @@ export default function Carrito({ carrito, setCarrito }) {
                     <FlatList
                         data={carrito}
                         renderItem={renderItem}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item) => item.id.toString()}
                     />
                     <View style={styles.totalContainer}>
                         <TouchableOpacity
@@ -87,7 +90,6 @@ export default function Carrito({ carrito, setCarrito }) {
         </SafeAreaView>
     );
 }
-
 
 const styles = StyleSheet.create({
     container: {

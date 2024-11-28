@@ -11,31 +11,36 @@ import DetalleVestido from "./Interfaces/Detallevestido";
 import ArtesanoScreen from "./Interfaces/ArtesanoScreen";
 import ProductoScreen from "./Interfaces/ProductoScreen";
 import EditarPerfil from "./Interfaces/EditarPerfil";
+import ArtesanoSignUp from "./Interfaces/ArtesanoSignUp";
+import MainArtesano from "./Interfaces/MainArtesano";
+import { CartProvider } from "./CartContext";
 
 const Stack = createStackNavigator();
 
 export default function App() {
     return (
-        <NavigationContainer>
-            <Stack.Navigator
-                screenOptions={{
-                    headerShown: false,
-                }}
-            >
-
-                <Stack.Screen name="Start" component={StartScreen} />
-                <Stack.Screen name={"Main"} component={Main}/>
-                <Stack.Screen name={"Detallevestido"} component={DetalleVestido} />
-                <Stack.Screen name={"Perfil"} component={Perfil} />
-                <Stack.Screen name="SignIn" component={SignIn} />
-                <Stack.Screen name="SignUp" component={SignUp} />
-                <Stack.Screen name={"Carrito"} component={Carrito} />
-                <Stack.Screen name={"Artesano"} component={ArtesanoScreen} />
-                <Stack.Screen name={"Productos"} component={ProductoScreen} />
-                <Stack.Screen name={"Editar"} component={EditarPerfil} />
-
-
-            </Stack.Navigator>
-        </NavigationContainer>
+        <CartProvider>
+            <NavigationContainer>
+                <Stack.Navigator
+                    initialRouteName="Start"
+                    screenOptions={{
+                        headerShown: false,
+                    }}
+                >
+                    <Stack.Screen name="Start" component={StartScreen} />
+                    <Stack.Screen name="Main" component={Main} />
+                    <Stack.Screen name="Detallevestido" component={DetalleVestido} />
+                    <Stack.Screen name="Perfil" component={Perfil} />
+                    <Stack.Screen name="SignIn" component={SignIn} />
+                    <Stack.Screen name="SignUp" component={SignUp} />
+                    <Stack.Screen name="Carrito" component={Carrito} />
+                    <Stack.Screen name="Artesano" component={ArtesanoScreen} />
+                    <Stack.Screen name="Productos" component={ProductoScreen} />
+                    <Stack.Screen name="Editar" component={EditarPerfil} />
+                    <Stack.Screen name="Artesanosign" component={ArtesanoSignUp} />
+                    <Stack.Screen name="MainArtesano" component={MainArtesano} />
+                </Stack.Navigator>
+            </NavigationContainer>
+        </CartProvider>
     );
 }

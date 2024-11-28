@@ -33,7 +33,7 @@ const SignUp = ({navigation}) => {
         setLoading(true); // Mostrar el indicador de carga
 
         try {
-            const response = await axios.post('http://10.177.28.20:5000/compradores/signup', {
+            const response = await axios.post('http://192.168.0.101:5000/compradores/signup', {
                 nombre: name,
                 email: email,
                 password: password,
@@ -168,6 +168,15 @@ const SignUp = ({navigation}) => {
                             >
                                 <Text style={styles.signInLinkText}>Iniciar Sesión</Text>
                             </TouchableOpacity>
+
+                        </View>
+                        <View style={styles.signInContainer}>
+                        <TouchableOpacity
+                            style={styles.artisanSignUpButton}
+                            onPress={() => navigation.navigate('Artesanosign')}
+                        >
+                            <Text style={styles.artisanSignUpButtonText}>Registrarse como Artesano</Text>
+                        </TouchableOpacity>
                         </View>
                     </View>
                 </ImageBackground>
@@ -252,6 +261,21 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 14,
     },
+    artisanSignUpButton: {
+        backgroundColor: '#65709F', // Un color verde para destacar el botón
+        borderRadius: 10,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    artisanSignUpButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+
 });
 
 export default SignUp;

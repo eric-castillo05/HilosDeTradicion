@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { CartContext } from '../CartContext';
 
-export default function DetalleVestido({ route, setCarrito }) {
+export default function DetalleVestido({ route }) {
     const { product } = route.params;  // Obtener datos del producto
     const navigation = useNavigation();
+    const { setCarrito } = useContext(CartContext);
 
     const agregarAlCarrito = () => {
         setCarrito((prevCarrito) => {

@@ -2,38 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
-import axios from 'axios';  // Asegúrate de tener axios para hacer la solicitud al backend
+import axios from 'axios';
 
 export default function Perfil({ navigation }) {
     const [userName, setUserName] = useState('');
     const [userEmail, setUserEmail] = useState('');
 
-    // Obtener los datos del usuario del almacenamiento local
     const getUserData = async () => {
         try {
-            const name = await AsyncStorage.getItem('userName');  // Suponemos que el nombre del usuario está guardado en AsyncStorage
-            const email = await AsyncStorage.getItem('userEmail');  // Email también guardado
-            if (name) {
-                setUserName(name);
-            }
-            if (email) {
-                setUserEmail(email);
-            }
+            const name = await AsyncStorage.getItem('userName');
+            const email = await AsyncStorage.getItem('userEmail');
+            if (name) setUserName(name);
+            if (email) setUserEmail(email);
         } catch (error) {
             console.log('Error al obtener los datos del usuario:', error);
         }
     };
 
-    // Función para cerrar sesión
     const handleSignOut = async () => {
         Alert.alert(
             'Cerrar sesión',
             '¿Estás seguro de que quieres cerrar sesión?',
             [
-                {
-                    text: 'Cancelar',
-                    style: 'cancel',
-                },
+                { text: 'Cancelar', style: 'cancel' },
                 {
                     text: 'Aceptar',
                     onPress: async () => {
@@ -41,10 +32,7 @@ export default function Perfil({ navigation }) {
                             await AsyncStorage.removeItem('userUID');
                             await AsyncStorage.removeItem('userName');
                             await AsyncStorage.removeItem('userEmail');
-                            navigation.reset({
-                                index: 0,
-                                routes: [{ name: 'Start' }],  // Redirige al inicio
-                            });
+                            navigation.reset({ index: 0, routes: [{ name: 'Start' }] });
                         } catch (error) {
                             Alert.alert('Error', 'No se pudo cerrar sesión');
                         }
@@ -54,36 +42,25 @@ export default function Perfil({ navigation }) {
         );
     };
 
-    // Función para eliminar la cuenta
     const handleDeleteAccount = async () => {
         Alert.alert(
             'Eliminar cuenta',
             '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.',
             [
-                {
-                    text: 'Cancelar',
-                    style: 'cancel',
-                },
+                { text: 'Cancelar', style: 'cancel' },
                 {
                     text: 'Aceptar',
                     onPress: async () => {
                         try {
                             const userId = await AsyncStorage.getItem('userUID');
                             if (userId) {
-                                // Realizamos la solicitud al backend para eliminar la cuenta
-                                const response = await axios.delete(`http://10.177.28.20:5000/users/${userId}`);
-
+                                const response = await axios.delete(`http://192.168.0.101:5000/compradores/${userId}`);
                                 if (response.status === 200) {
-                                    // Eliminar los datos del usuario localmente
                                     await AsyncStorage.removeItem('userUID');
                                     await AsyncStorage.removeItem('userName');
                                     await AsyncStorage.removeItem('userEmail');
-
                                     Alert.alert('Éxito', 'Tu cuenta ha sido eliminada');
-                                    navigation.reset({
-                                        index: 0,
-                                        routes: [{ name: 'Start' }],
-                                    });
+                                    navigation.reset({ index: 0, routes: [{ name: 'Start' }] });
                                 }
                             }
                         } catch (error) {
@@ -96,7 +73,6 @@ export default function Perfil({ navigation }) {
         );
     };
 
-    // Obtener los datos del usuario al montar el componente
     useEffect(() => {
         getUserData();
     }, []);
@@ -108,10 +84,7 @@ export default function Perfil({ navigation }) {
                     <Text style={styles.headerText}>Perfil</Text>
                 </View>
                 <View style={styles.profileContainer}>
-                    <Image
-                        source={require('../assets/perfil.jpeg')}
-                        style={styles.profileImage}
-                    />
+                    <Image source={require('../assets/perfil.jpeg')} style={styles.profileImage} />
                     <Text style={styles.profileName}>{userName || 'Nombre no disponible'}</Text>
                     <Text style={styles.profileEmail}>{userEmail || 'Email no disponible'}</Text>
                     <View style={styles.buttonContainer}>
@@ -123,6 +96,9 @@ export default function Perfil({ navigation }) {
                             <Text style={[styles.buttonText, { color: 'red' }]}>Cerrar sesión</Text>
                         </TouchableOpacity>
                     </View>
+                    <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
+                        <Text style={styles.deleteButtonText}>Eliminar Cuenta</Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.optionContainer}>
                     <TouchableOpacity style={styles.option}>
@@ -131,10 +107,6 @@ export default function Perfil({ navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.option}>
                         <Text style={styles.optionText}>Saved Items</Text>
-                        <Text style={styles.arrow}>›</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.option} onPress={() => navigation.navigate ("Productos")}>
-                        <Text style={styles.optionText}>Agregar Producto</Text>
                         <Text style={styles.arrow}>›</Text>
                     </TouchableOpacity>
                 </View>
@@ -146,7 +118,7 @@ export default function Perfil({ navigation }) {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#F5F5F7', // Softer background
+        backgroundColor: '#F5F5F7',
     },
     container: {
         flex: 1,
@@ -176,22 +148,10 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
     },
-    profileImageContainer: {
-        position: 'relative',
-        marginBottom: 15,
-    },
     profileImage: {
         width: 120,
         height: 120,
         borderRadius: 60,
-    },
-    profileImageOverlay: {
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        borderRadius: 20,
-        padding: 5,
     },
     profileName: {
         fontSize: 20,
@@ -210,7 +170,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     editButton: {
-        backgroundColor: '#5E3D7E', // More sophisticated purple
+        backgroundColor: '#5E3D7E',
         borderRadius: 25,
         paddingVertical: 12,
         paddingHorizontal: 25,
@@ -259,5 +219,18 @@ const styles = StyleSheet.create({
     arrow: {
         fontSize: 20,
         color: '#A0A0A5',
+    },
+    deleteButton: {
+        backgroundColor: '#dc3545',
+        borderRadius: 25,
+        paddingVertical: 12,
+        paddingHorizontal: 25,
+        marginTop: 15,
+        alignItems: 'center',
+    },
+    deleteButtonText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 16,
     },
 });

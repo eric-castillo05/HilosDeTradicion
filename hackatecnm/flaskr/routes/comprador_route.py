@@ -50,20 +50,24 @@ def crear_comprador():
 def actualizar_comprador(comprador_id):
     try:
         data = request.get_json()
+
+        # Verificar si el usuario existe antes de actualizar
+        comprador = Comprador.query.get(comprador_id)
+        if not comprador:
+            return jsonify({'error': 'Usuario no encontrado'}), HTTPStatus.NOT_FOUND
+
         comprador = CompradorService.update_comprador(comprador_id, data)
         return jsonify(comprador), HTTPStatus.OK
     except Exception as e:
         return jsonify({'error': str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
 
-
 @compradores_bp.route('/<int:comprador_id>', methods=['DELETE'])
 def eliminar_comprador(comprador_id):
     try:
-        resultado = CompradorService.delete_comprador(comprador_id)
-        return jsonify(resultado), HTTPStatus.OK
+        resultado = CompradorService.delete_comprador(comprador_id)  # Delete using service layer
+        return jsonify(resultado), HTTPStatus.OK  # Return result of deletion
     except Exception as e:
         return jsonify({'error': str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
-
 
 @compradores_bp.route('/signin', methods=['POST'])
 def signin_comprador():
