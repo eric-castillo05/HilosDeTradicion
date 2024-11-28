@@ -8,13 +8,12 @@ import {
     Image,
     Alert,
     StyleSheet,
-    SafeAreaView,
-    ScrollView
+    SafeAreaView
 } from 'react-native';
 import axios from 'axios';
-import ImagePicker from 'react-native-image-picker';  // Asegúrate de tener esta dependencia instalada
+import ImagePicker from 'react-native-image-picker';
 
-const baseURL = 'http://10.177.28.20:5000/productos/'; // Cambia esta URL según tu configuración
+const baseURL = 'http://10.177.28.20:5000/productos/';
 
 export default function ProductoScreen({ navigation }) {
     const [productos, setProductos] = useState([]);
@@ -23,11 +22,10 @@ export default function ProductoScreen({ navigation }) {
     const [precio, setPrecio] = useState('');
     const [categoria, setCategoria] = useState('');
     const [cantidadEnStock, setCantidadEnStock] = useState('');
-    const [disponibilidad, setDisponibilidad] = useState('1');  // Por defecto, disponible
+    const [disponibilidad, setDisponibilidad] = useState('1');
     const [imagen, setImagen] = useState(null);
     const [selectedProductoId, setSelectedProductoId] = useState(null);
 
-    // Función para obtener la lista de productos
     const fetchProductos = async () => {
         try {
             const response = await axios.get(baseURL);
@@ -38,7 +36,6 @@ export default function ProductoScreen({ navigation }) {
         }
     };
 
-    // Función para crear un nuevo producto
     const crearProducto = async () => {
         try {
             const newProducto = {
@@ -74,7 +71,7 @@ export default function ProductoScreen({ navigation }) {
 
             if (response.status === 201) {
                 Alert.alert('Éxito', 'Producto creado correctamente');
-                fetchProductos();  // Refrescar la lista
+                fetchProductos();
                 limpiarFormulario();
             }
         } catch (error) {
@@ -83,7 +80,6 @@ export default function ProductoScreen({ navigation }) {
         }
     };
 
-    // Función para actualizar un producto
     const actualizarProducto = async () => {
         if (!selectedProductoId) {
             Alert.alert('Error', 'Selecciona un producto para actualizar');
@@ -124,7 +120,7 @@ export default function ProductoScreen({ navigation }) {
 
             if (response.status === 200) {
                 Alert.alert('Éxito', 'Producto actualizado correctamente');
-                fetchProductos();  // Refrescar la lista
+                fetchProductos();
                 limpiarFormulario();
             }
         } catch (error) {
@@ -133,14 +129,13 @@ export default function ProductoScreen({ navigation }) {
         }
     };
 
-    // Función para eliminar un producto
     const eliminarProducto = async (id) => {
         try {
             const response = await axios.delete(`${baseURL}/${id}`);
 
             if (response.status === 200) {
                 Alert.alert('Éxito', 'Producto eliminado correctamente');
-                fetchProductos();  // Refrescar la lista
+                fetchProductos();
             }
         } catch (error) {
             console.error('Error al eliminar el producto:', error);
@@ -148,7 +143,6 @@ export default function ProductoScreen({ navigation }) {
         }
     };
 
-    // Función para seleccionar una imagen de la galería
     const seleccionarImagen = () => {
         ImagePicker.launchImageLibrary({}, (response) => {
             if (response.uri) {
@@ -157,7 +151,6 @@ export default function ProductoScreen({ navigation }) {
         });
     };
 
-    // Limpiar el formulario después de crear o actualizar un producto
     const limpiarFormulario = () => {
         setNombre('');
         setDescripcion('');
@@ -169,199 +162,188 @@ export default function ProductoScreen({ navigation }) {
         setSelectedProductoId(null);
     };
 
-    // Cargar la lista de productos cuando el componente se monta
     useEffect(() => {
         fetchProductos();
     }, []);
 
-    return (
-        <SafeAreaView style={styles.safeArea}>
-            <ScrollView
-                style={styles.container}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-            >
-                <Text style={styles.screenTitle}>Gestión de Productos</Text>
+    const renderForm = () => (
+        <View style={styles.formContainer}>
+            <Text style={styles.formTitle}>
+                {selectedProductoId ? 'Editar Producto' : 'Nuevo Producto'}
+            </Text>
 
-                {/* Product Form */}
-                <View style={styles.formContainer}>
-                    <Text style={styles.formTitle}>
-                        {selectedProductoId ? 'Editar Producto' : 'Nuevo Producto'}
-                    </Text>
+            <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Nombre</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Ingrese el nombre del producto"
+                    value={nombre}
+                    onChangeText={setNombre}
+                />
+            </View>
 
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.inputLabel}>Nombre</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Ingrese el nombre del producto"
-                            value={nombre}
-                            onChangeText={setNombre}
-                        />
-                    </View>
+            <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Descripción</Text>
+                <TextInput
+                    style={[styles.input, styles.multilineInput]}
+                    placeholder="Describa el producto"
+                    value={descripcion}
+                    onChangeText={setDescripcion}
+                    multiline
+                    numberOfLines={3}
+                />
+            </View>
 
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.inputLabel}>Descripción</Text>
-                        <TextInput
-                            style={[styles.input, styles.multilineInput]}
-                            placeholder="Describa el producto"
-                            value={descripcion}
-                            onChangeText={setDescripcion}
-                            multiline
-                            numberOfLines={3}
-                        />
-                    </View>
+            <View style={styles.horizontalInputGroup}>
+                <View style={styles.halfWidthInputContainer}>
+                    <Text style={styles.inputLabel}>Precio</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="$0.00"
+                        keyboardType="numeric"
+                        value={precio}
+                        onChangeText={setPrecio}
+                    />
+                </View>
+                <View style={styles.halfWidthInputContainer}>
+                    <Text style={styles.inputLabel}>Categoría</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Categoría"
+                        value={categoria}
+                        onChangeText={setCategoria}
+                    />
+                </View>
+            </View>
 
-                    <View style={styles.horizontalInputGroup}>
-                        <View style={styles.halfWidthInputContainer}>
-                            <Text style={styles.inputLabel}>Precio</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="$0.00"
-                                keyboardType="numeric"
-                                value={precio}
-                                onChangeText={setPrecio}
-                            />
-                        </View>
-                        <View style={styles.halfWidthInputContainer}>
-                            <Text style={styles.inputLabel}>Categoría</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Categoría"
-                                value={categoria}
-                                onChangeText={setCategoria}
-                            />
-                        </View>
-                    </View>
-
-                    <View style={styles.horizontalInputGroup}>
-                        <View style={styles.halfWidthInputContainer}>
-                            <Text style={styles.inputLabel}>Stock</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Cantidad"
-                                keyboardType="numeric"
-                                value={cantidadEnStock}
-                                onChangeText={setCantidadEnStock}
-                            />
-                        </View>
-                        <View style={styles.halfWidthInputContainer}>
-                            <Text style={styles.inputLabel}>Disponibilidad</Text>
-                            <View style={styles.toggleContainer}>
-                                <TouchableOpacity
-                                    style={[
-                                        styles.toggleButton,
-                                        disponibilidad === '1' ? styles.toggleActive : styles.toggleInactive
-                                    ]}
-                                    onPress={() => setDisponibilidad('1')}
-                                >
-                                    <Text style={styles.toggleText}>Disponible</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={[
-                                        styles.toggleButton,
-                                        disponibilidad === '0' ? styles.toggleActive : styles.toggleInactive
-                                    ]}
-                                    onPress={() => setDisponibilidad('0')}
-                                >
-                                    <Text style={styles.toggleText}>No Disponible</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-
-                    {/* Image Selection */}
-                    <View style={styles.imageUploadContainer}>
+            <View style={styles.horizontalInputGroup}>
+                <View style={styles.halfWidthInputContainer}>
+                    <Text style={styles.inputLabel}>Stock</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Cantidad"
+                        keyboardType="numeric"
+                        value={cantidadEnStock}
+                        onChangeText={setCantidadEnStock}
+                    />
+                </View>
+                <View style={styles.halfWidthInputContainer}>
+                    <Text style={styles.inputLabel}>Disponibilidad</Text>
+                    <View style={styles.toggleContainer}>
                         <TouchableOpacity
-                            style={styles.imageUploadButton}
-                            onPress={seleccionarImagen}
+                            style={[
+                                styles.toggleButton,
+                                disponibilidad === '1' ? styles.toggleActive : styles.toggleInactive
+                            ]}
+                            onPress={() => setDisponibilidad('1')}
                         >
-                            <Text style={styles.imageUploadButtonText}>
-                                {imagen ? 'Cambiar Imagen' : 'Seleccionar Imagen'}
-                            </Text>
+                            <Text style={styles.toggleText}>Disponible</Text>
                         </TouchableOpacity>
-                        {imagen && (
-                            <Image
-                                source={{ uri: imagen.uri }}
-                                style={styles.uploadedImage}
-                            />
-                        )}
-                    </View>
-
-                    {/* Action Buttons */}
-                    <View style={styles.actionButtonContainer}>
                         <TouchableOpacity
-                            style={styles.primaryButton}
-                            onPress={selectedProductoId ? actualizarProducto : crearProducto}
+                            style={[
+                                styles.toggleButton,
+                                disponibilidad === '0' ? styles.toggleActive : styles.toggleInactive
+                            ]}
+                            onPress={() => setDisponibilidad('0')}
                         >
-                            <Text style={styles.primaryButtonText}>
-                                {selectedProductoId ? 'Actualizar' : 'Crear'}
-                            </Text>
+                            <Text style={styles.toggleText}>No Disponible</Text>
                         </TouchableOpacity>
-                        {selectedProductoId && (
-                            <TouchableOpacity
-                                style={styles.secondaryButton}
-                                onPress={limpiarFormulario}
-                            >
-                                <Text style={styles.secondaryButtonText}>Cancelar</Text>
-                            </TouchableOpacity>
-                        )}
                     </View>
                 </View>
+            </View>
 
-                {/* Product List */}
-                <Text style={styles.listTitle}>Productos Existentes</Text>
-                <FlatList
-                    data={productos}
-                    keyExtractor={(item) => item.producto_id.toString()}
-                    renderItem={({ item }) => (
-                        <View style={styles.productCard}>
-                            {item.url && (
-                                <Image
-                                    source={{ uri: item.url }}
-                                    style={styles.productCardImage}
-                                />
-                            )}
-                            <View style={styles.productCardContent}>
-                                <Text style={styles.productName}>{item.nombre}</Text>
-                                <Text style={styles.productCategory}>{item.categoria}</Text>
-                                <Text style={styles.productDescription}>{item.descripcion}</Text>
-                                <View style={styles.productDetailsContainer}>
-                                    <Text style={styles.productPrice}>${item.precio}</Text>
-                                    <Text style={[
-                                        styles.productStatus,
-                                        { color: item.disponibilidad ? '#28a745' : '#dc3545' }
-                                    ]}>
-                                        {item.disponibilidad ? 'Disponible' : 'No disponible'}
-                                    </Text>
-                                </View>
-                                <View style={styles.cardActionButtons}>
-                                    <TouchableOpacity
-                                        style={styles.cardEditButton}
-                                        onPress={() => {
-                                            setNombre(item.nombre);
-                                            setDescripcion(item.descripcion);
-                                            setPrecio(item.precio.toString());
-                                            setCategoria(item.categoria);
-                                            setCantidadEnStock(item.cantidad_en_stock.toString());
-                                            setDisponibilidad(item.disponibilidad.toString());
-                                            setSelectedProductoId(item.producto_id);
-                                        }}
-                                    >
-                                        <Text style={styles.cardActionButtonText}>Editar</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={styles.cardDeleteButton}
-                                        onPress={() => eliminarProducto(item.producto_id)}
-                                    >
-                                        <Text style={styles.cardActionButtonText}>Eliminar</Text>
-                                    </TouchableOpacity>
-                                </View>
+            <View style={styles.imageUploadContainer}>
+                <TouchableOpacity
+                    style={styles.imageUploadButton}
+                    onPress={seleccionarImagen}
+                >
+                    <Text style={styles.imageUploadButtonText}>
+                        {imagen ? 'Cambiar Imagen' : 'Seleccionar Imagen'}
+                    </Text>
+                </TouchableOpacity>
+                {imagen && (
+                    <Image
+                        source={{ uri: imagen.uri }}
+                        style={styles.uploadedImage}
+                    />
+                )}
+            </View>
+
+            <View style={styles.actionButtonContainer}>
+                <TouchableOpacity
+                    style={styles.primaryButton}
+                    onPress={selectedProductoId ? actualizarProducto : crearProducto}
+                >
+                    <Text style={styles.primaryButtonText}>
+                        {selectedProductoId ? 'Actualizar' : 'Crear'}
+                    </Text>
+                </TouchableOpacity>
+                {selectedProductoId && (
+                    <TouchableOpacity
+                        style={styles.secondaryButton}
+                        onPress={limpiarFormulario}
+                    >
+                        <Text style={styles.secondaryButtonText}>Cancelar</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+        </View>
+    );
+
+    return (
+        <SafeAreaView style={styles.safeArea}>
+            <FlatList
+                data={productos}
+                keyExtractor={(item) => item.producto_id.toString()}
+                ListHeaderComponent={renderForm}
+                renderItem={({ item }) => (
+                    <View style={styles.productCard}>
+                        {item.url && (
+                            <Image
+                                source={{ uri: item.url }}
+                                style={styles.productCardImage}
+                            />
+                        )}
+                        <View style={styles.productCardContent}>
+                            <Text style={styles.productName}>{item.nombre}</Text>
+                            <Text style={styles.productCategory}>{item.categoria}</Text>
+                            <Text style={styles.productDescription}>{item.descripcion}</Text>
+                            <View style={styles.productDetailsContainer}>
+                                <Text style={styles.productPrice}>${item.precio}</Text>
+                                <Text style={[
+                                    styles.productStatus,
+                                    { color: item.disponibilidad ? '#28a745' : '#dc3545' }
+                                ]}>
+                                    {item.disponibilidad ? 'Disponible' : 'No disponible'}
+                                </Text>
+                            </View>
+                            <View style={styles.cardActionButtons}>
+                                <TouchableOpacity
+                                    style={styles.cardEditButton}
+                                    onPress={() => {
+                                        setNombre(item.nombre);
+                                        setDescripcion(item.descripcion);
+                                        setPrecio(item.precio.toString());
+                                        setCategoria(item.categoria);
+                                        setCantidadEnStock(item.cantidad_en_stock.toString());
+                                        setDisponibilidad(item.disponibilidad.toString());
+                                        setSelectedProductoId(item.producto_id);
+                                    }}
+                                >
+                                    <Text style={styles.cardActionButtonText}>Editar</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={styles.cardDeleteButton}
+                                    onPress={() => eliminarProducto(item.producto_id)}
+                                >
+                                    <Text style={styles.cardActionButtonText}>Eliminar</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
-                    )}
-                    contentContainerStyle={styles.productListContainer}
-                />
-            </ScrollView>
+                    </View>
+                )}
+                contentContainerStyle={styles.productListContainer}
+            />
         </SafeAreaView>
     );
 }

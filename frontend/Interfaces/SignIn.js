@@ -42,7 +42,7 @@ const SignIn = ({ navigation }) => {
         setLoading(true); // Mostrar el indicador de carga
 
         try {
-            const response = await axios.post('http://192.168.0.101:5000/compradores/signin', {
+            const response = await axios.post('http://10.177.28.20:5000/compradores/signin', {
                 email: email,
                 password: password,
             });

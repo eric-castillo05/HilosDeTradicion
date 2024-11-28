@@ -69,7 +69,7 @@ const EditProfileScreen = ({ navigation }) => {
                 });
             }
 
-            const response = await axios.put(`http://192.168.0.101:5000/compradores/${userId}`, formData, {
+            const response = await axios.put(`http://10.177.28.20:5000/compradores/${userId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -106,7 +106,7 @@ const EditProfileScreen = ({ navigation }) => {
                     text: 'Aceptar',
                     onPress: async () => {
                         try {
-                            const response = await axios.delete(`http://192.168.0.101:5000/compradores/${userId}`);
+                            const response = await axios.delete(`http://10.177.28.20:5000/compradores/${userId}`);
 
                             if (response.status === 200) {
                                 // Limpiar los datos de AsyncStorage
